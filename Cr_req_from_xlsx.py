@@ -8,7 +8,7 @@ from os.path import join, abspath
 class NotAllData(Exception):
     pass
 
-data_path = join('.', "Спецификация ИОС4-ОВ.xlsx")
+data_path = join("Specification_test.xlsx")
 data_path = abspath(data_path)
 
 wb = load_workbook(filename=data_path, data_only=True, read_only=True)
