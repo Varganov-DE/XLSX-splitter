@@ -8,7 +8,7 @@ from os.path import join, abspath
 class NotAllData(Exception):
     pass
 
-data_path = join("Specification_test.xlsx")
+data_path = join('.', "Спецификация ОВ.xlsx")
 data_path = abspath(data_path)
 
 wb = load_workbook(filename=data_path, data_only=True, read_only=True)
@@ -19,7 +19,7 @@ print(wsn)
 wsdata = None
 
 for i in wsn:
-    if wb[i]['D1'].value == 'Маркер': #проверка значения в ячейке D1
+    if wb[i]['E1'].value == 'Завод-изготовитель': #проверка значения в ячейке D1
         wsdata = i
 if wsdata == None:
     raise NotAllData('Нет данных в указанной колонке')
@@ -41,7 +41,7 @@ for row in ws.iter_rows(min_row=2, min_col=1, max_row=ws.max_row,
             mandata[marker].append(markerdata)
 
 for marker in mandata:
-    print(f'Маркер {marker}, количество позиций: {len(mandata[marker])}')
+    print(f'По маркеру {marker}, количество позиций: {len(mandata[marker])}')
 
 wb.close
 
