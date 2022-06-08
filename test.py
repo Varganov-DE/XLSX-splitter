@@ -24,3 +24,4 @@ c.value # получение значения другой ячейки
 print('Строка %s, Столбец %s : %s' % (c.row, c.column, c.value))
 print('Ячейка %s, : %s' % (c.coordinate, c.value))
 print(sheet['C1'].value)
+

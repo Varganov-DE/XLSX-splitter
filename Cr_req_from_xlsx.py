@@ -13,7 +13,7 @@ data_path = abspath(data_path)
 
 wb = load_workbook(filename=data_path, data_only=True, read_only=True)
 
-wsn = list(wb.sheetnames)
+wsn = wb.sheetnames
 print(wsn)
 
 wsdata = None
@@ -33,7 +33,7 @@ mandata = {} # Цикл сбора всех данных в колонке, и �
 for row in ws.iter_rows(min_row=2, min_col=1, max_row=ws.max_row,
                         max_col=ws.max_column):
     if len(row) > 0:
-        marker = row[3].value # Указывает что выборка из 2-й колонки(4-й на листе)
+        marker = row[3].value # Указывает что выборка из 4-й колонки(3-й по индексу)
         if marker is not None:
             markerdata = [cell.value for cell in row]
             if marker not in mandata:
@@ -60,46 +60,46 @@ for marker in mandata: # Цикл создания новых книг xlsx, п�
 # Тут нужно прописать оформление, сделаю позже
 
         font = Font(name='Calibri',
-                     size=10,
-                     bold=False,
-                     italic=False,
-                     vertAlign=None,
-                     underline='none',
-                     strike=False,
-                     color='FF000000')
-        
+                        size=14,
+                        bold=False,
+                        italic=False,
+                        vertAlign=None,
+                        underline='none',
+                        strike=False,
+                        color='FF000000')
+
         ws.font = font
 
         fill = PatternFill(fill_type=None,
-                     start_color='FFFFFFFF',
-                     end_color='FF000000')
+                        start_color='FFFFFFFF',
+                        end_color='FF000000')
         border = Border(left=Side(border_style=None,
-                               color='FF000000'),
-                     right=Side(border_style=None,
                                 color='FF000000'),
-                     top=Side(border_style=None,
-                              color='FF000000'),
-                     bottom=Side(border_style=None,
-                                 color='FF000000'),
-                     diagonal=Side(border_style=None,
-                                   color='FF000000'),
-                     diagonal_direction=0,
-                     outline=Side(border_style=None,
-                                  color='FF000000'),
-                     vertical=Side(border_style=None,
-                                   color='FF000000'),
-                     horizontal=Side(border_style=None,
+                        right=Side(border_style=None,
+                                color='FF000000'),
+                        top=Side(border_style=None,
+                                color='FF000000'),
+                        bottom=Side(border_style=None,
+                                    color='FF000000'),
+                        diagonal=Side(border_style=None,
+                                    color='FF000000'),
+                        diagonal_direction=0,
+                        outline=Side(border_style=None,
+                                    color='FF000000'),
+                        vertical=Side(border_style=None,
+                                    color='FF000000'),
+                        horizontal=Side(border_style=None,
                                     color='FF000000')
                     )
         alignment=Alignment(horizontal='general',
-                         vertical='bottom',
-                         text_rotation=0,
-                         wrap_text=False,
-                         shrink_to_fit=False,
-                         indent=0)
+                            vertical='bottom',
+                            text_rotation=0,
+                            wrap_text=False,
+                            shrink_to_fit=False,
+                            indent=0)
         number_format = 'General'
         protection = Protection(locked=True,
-                             hidden=False)
+                                hidden=False)
 
     # Конец оформления
 
