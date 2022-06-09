@@ -19,7 +19,7 @@ print(wsn)
 wsdata = None
 
 for i in wsn:
-    if wb[i]['E1'].value == 'Завод-изготовитель': #проверка значения в ячейке D1
+    if wb[i]['D1'].value == 'Код, оборудования, изделия, материала': #проверка значения в ячейке D1
         wsdata = i
 if wsdata == None:
     raise NotAllData('Нет данных в указанном столбце')
@@ -39,7 +39,7 @@ for row in ws.iter_rows(min_row=2, min_col=1, max_row=ws.max_row,
                         max_col=ws.max_column): 
     
     if len(row) > 0:
-        marker = row[3].value # записываем в переменную значение ячейки в 4-м столбце(3-м по индексу)
+        marker = row[5].value # записываем в переменную значение ячейки в 4-м столбце(3-м по индексу)
         if marker is not None: # если данные есть в ячейке, то:
             markerdata = [cell.value for cell in row] # записываем в переменную список из значений ячеек в строке
             
@@ -72,6 +72,10 @@ for marker in mandata: # для каждого индекса словаря
 
     wb.save(exfilname) # сохраняем файл
     wb.close # закрываем файл
+
+    # копируем стиль ячеек из исходного документа в новый:
+
+
 
 print('\nДанные по маркеру материалов обработаны')
 print('Заявки созданы')
