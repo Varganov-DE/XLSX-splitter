@@ -4,25 +4,39 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Alignment, PatternFill, Font, Border, Side, Protection
 from os.path import join, abspath
 
-class NotAllData(Exception): # проверка наличия книги и данных в ней
+# обработка исключений: проверка наличия книги и данных в ней:
+
+class NotAllData(Exception): 
     pass
 
-data_path = ("Спецификация ОВ.xlsx") # относительный путь
-data_path = abspath(data_path) # абсолютный путь
+# Аргумент №1: data_path - название файла и путь к нему
+
+data_path = input("Введите название файла: ")
+#data_path = ("Спецификация ОВ.xlsx") # относительный путь
+#data_path = abspath(data_path) # абсолютный путь
 
 # задаём параметры работы с файлом:
 wb = load_workbook(filename = data_path, data_only = True, read_only = True)
 
 wsn = wb.sheetnames # присваивает список листов в книге
-print(wsn)
+print(f"В файле \"{data_path}\", есть листы: {wsn}.")
 
 wsdata = None
 
+# Аргумент №2: name_of_marker_cell - координаты ячейки с маркером
+
+name_of_marker_cell = input("Введите координаты ячейки с маркером(напр E1): ")
+#name_of_marker_cell = 'E1'
+
+number_cell = name_of_marker_cell
+number_cell = number_cell[:-1]
+number_cell = ord(number_cell.lower()) - 97
+
 for i in wsn:
-    if wb[i]['D1'].value == 'Код, оборудования, изделия, материала': #проверка значения в ячейке D1
+    if wb[i][name_of_marker_cell].value != None: #проверка есть ли значение в указанной ячейке с маркером
         wsdata = i
 if wsdata == None:
-    raise NotAllData('Нет данных в указанном столбце')
+    raise NotAllData('Нет данных в указанной колонке')
 
 # запись в переменную shapka названий всех столбцов:
 
@@ -39,7 +53,7 @@ for row in ws.iter_rows(min_row=2, min_col=1, max_row=ws.max_row,
                         max_col=ws.max_column): 
     
     if len(row) > 0:
-        marker = row[5].value # записываем в переменную значение ячейки в 4-м столбце(3-м по индексу)
+        marker = row[number_cell].value # записываем в переменную значение ячейки в 4-м столбце(3-м по индексу)
         if marker is not None: # если данные есть в ячейке, то:
             markerdata = [cell.value for cell in row] # записываем в переменную список из значений ячеек в строке
             

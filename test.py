@@ -25,3 +25,7 @@ print('Строка %s, Столбец %s : %s' % (c.row, c.column, c.value))
 print('Ячейка %s, : %s' % (c.coordinate, c.value))
 print(sheet['C1'].value)
 
+number_cell = "E1"
+number_cell = number_cell[:-1]
+number_cell = ord(number_cell.lower()) - 97
+print(number_cell)
