@@ -4,6 +4,8 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Alignment, PatternFill, Font, Border, Side, Protection
 from os.path import join, abspath
 
+input("Нажмите ENTER, что-бы продолжить.\n")
+
 # обработка исключений: проверка наличия книги и данных в ней:
 
 class NotAllData(Exception): 
@@ -11,7 +13,7 @@ class NotAllData(Exception):
 
 # Аргумент №1: data_path - название файла и путь к нему
 
-data_path = input("Введите название файла: ")
+data_path = input("Введите название файла(вида: название.xlsx):  ")
 #data_path = ("Спецификация ОВ.xlsx") # относительный путь
 #data_path = abspath(data_path) # абсолютный путь
 
@@ -93,3 +95,5 @@ for marker in mandata: # для каждого индекса словаря
 
 print('\nДанные по маркеру материалов обработаны')
 print('Заявки созданы')
+
+input('\nНажмите ENTER, что-бы закрыть окно.')
