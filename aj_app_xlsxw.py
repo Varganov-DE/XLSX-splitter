@@ -22,7 +22,6 @@ wb = load_workbook(filename = data_path, data_only = True, read_only = True)
 
 wsn = wb.sheetnames # присваивает список листов в книге
 print(f"В файле \"{data_path}\", есть листы: {wsn}.")
-
 wsdata = None
 
 # Аргумент №2: name_of_marker_cell - координаты ячейки с маркером
