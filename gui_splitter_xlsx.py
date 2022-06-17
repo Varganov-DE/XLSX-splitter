@@ -12,7 +12,7 @@ def split_pages(data_path, name_of_marker_cell):
 
     # Аргумент №1: data_path - название файла и путь к нему
 
-    data_path = input("Введите название файла(вида: название.xlsx):  ")
+    #data_path = input("Введите название файла(вида: название.xlsx):  ")
     #data_path = ("Спецификация ОВ.xlsx") # относительный путь
     #data_path = abspath(data_path) # абсолютный путь
 
@@ -25,7 +25,7 @@ def split_pages(data_path, name_of_marker_cell):
 
     # Аргумент №2: name_of_marker_cell - координаты ячейки с маркером
 
-    name_of_marker_cell = input("Введите координаты ячейки с маркером(напр E1): ")
+    #name_of_marker_cell = input("Введите координаты ячейки с маркером(напр E1): ")
     #name_of_marker_cell = 'E1'
 
     number_cell = name_of_marker_cell
@@ -118,7 +118,7 @@ def split_pages(data_path, name_of_marker_cell):
         error_msgs.append("Please select a PDF input file")
  
     # Проверяет действительный каталог
-    if not(Path(output_dir)).exists():
+    if not(Path(exfilname)).exists():
         errors = True
         error_msgs.append("Please Select a valid output directory")
  
@@ -137,36 +137,26 @@ def press(button):
         button: название кнопки. Используем названия Выполнить или Выход
     """
     if button == "Process":
-        src_file = app.getEntry("Input_File")
-        dest_dir = app.getEntry("Output_Directory")
-        page_range = app.getEntry("Page_Ranges")
-        out_file = app.getEntry("Output_name")
-        errors, error_msg = validate_inputs(src_file, dest_dir, page_range, out_file)
-        if errors:
-            app.errorBox("Error", "\n".join(error_msg), parent=None)
-        else:
-            split_pages(src_file, page_range, Path(dest_dir, out_file))
+        src_file = app.getEntry("wb")
+        dest_dir = app.getEntry("name_of_marker_cell")
+        
+        
     else:
         app.stop()
  
  
 # Создать окно пользовательского интерфейса
-app = gui("PDF Splitter", useTtk=True)
+app = gui("XLSX Splitter", useTtk=True)
 app.setTtkTheme("default")
 app.setSize(500, 200)
  
 # Добавить интерактивные компоненты
-app.addLabel("Choose Source PDF File")
+app.addLabel("Choose Source XLSX File")
 app.addFileEntry("Input_File")
  
-app.addLabel("Select Output Directory")
-app.addDirectoryEntry("Output_Directory")
+app.addLabel("Введите имя ячейки с маркером")
+app.addEntry("Output_Directory")
  
-app.addLabel("Output file name")
-app.addEntry("Output_name")
- 
-app.addLabel("Page Ranges: 1,3,4-10")
-app.addEntry("Page_Ranges")
  
 # Связать кнопки с функцией под названием press
 app.addButtons(["Process", "Quit"], press)
