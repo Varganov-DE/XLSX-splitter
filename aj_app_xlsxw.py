@@ -18,19 +18,12 @@ wb = load_workbook(filename = data_path, data_only = True, read_only = True)
 wsn = wb.sheetnames # присваивает список листов в книге
 print(f"В файле \"{data_path}\", есть листы: {wsn}.")
 
-
 # Аргумент №2: name_of_marker_cell - координаты ячейки с маркером
 
-name_of_marker_cell = input("Введите координаты ячейки с маркером(напр E1): ")
-#name_of_marker_cell = 'E1'
-
-#Вычисляем порядковый номер столбца с маркером:
-number_cell = name_of_marker_cell
-number_cell = number_cell[:-1]
-number_cell = ord(number_cell.lower()) - 97
+number_cell = input("Введите букву-название столбца с маркером(напр D): ") #number_cell = 'D'
+number_cell = ord(number_cell.lower()) - 97 #Вычисляем порядковый номер столбца с маркером:
 
 # запись в переменную shapka названий всех столбцов:
-
 ws = wb.active
 shapka = [cell.value for cell in next(
     ws.iter_rows(min_row=1, min_col=1, max_row=1, max_col=ws.max_column))]
