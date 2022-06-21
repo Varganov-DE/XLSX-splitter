@@ -6,16 +6,9 @@ from os.path import join, abspath
 
 input("Нажмите ENTER, что-бы продолжить.\n")
 
-# обработка исключений: проверка наличия книги и данных в ней:
-
-class NotAllData(Exception): 
-    pass
-
 # Аргумент №1: data_path - название файла и путь к нему
 
-data_path = input("Введите название файла(вида: название.xlsx):  ")
-#data_path = ("Спецификация ОВ.xlsx") # относительный путь
-#data_path = abspath(data_path) # абсолютный путь
+data_path = join(input("Введите название файла(вида: Название):  ") + '.xlsx')
 
 # задаём параметры работы с файлом:
 wb = load_workbook(filename = data_path, data_only = True, read_only = True)
@@ -23,26 +16,13 @@ wb = load_workbook(filename = data_path, data_only = True, read_only = True)
 wsn = wb.sheetnames # присваивает список листов в книге
 print(f"В файле \"{data_path}\", есть листы: {wsn}.")
 
-wsdata = None
-
 # Аргумент №2: name_of_marker_cell - координаты ячейки с маркером
 
-name_of_marker_cell = input("Введите координаты ячейки с маркером(напр E1): ")
-#name_of_marker_cell = 'E1'
-
-number_cell = name_of_marker_cell
-number_cell = number_cell[:-1]
-number_cell = ord(number_cell.lower()) - 97
-
-for i in wsn:
-    if wb[i][name_of_marker_cell].value != None: #проверка есть ли значение в указанной ячейке с маркером
-        wsdata = i
-if wsdata == None:
-    raise NotAllData('Нет данных в указанной колонке')
+number_cell = input("Введите букву-название столбца с маркером(напр D): ") #number_cell = 'D'
+number_cell = ord(number_cell.lower()) - 97 #Вычисляем порядковый номер столбца с маркером:
 
 # запись в переменную shapka названий всех столбцов:
-
-ws = wb[wsdata]
+ws = wb.active
 shapka = [cell.value for cell in next(
     ws.iter_rows(min_row=1, min_col=1, max_row=1, max_col=ws.max_column))]
 
@@ -68,19 +48,20 @@ for marker in mandata: # для каждого индекса(маркера) в
 
 wb.close # закрываем рабочую книгу
 
-# Создание отдельной книги xlsx под каждый маркер материалов
+# Создание отдельной книги xlsx под каждый маркер материалов:
 
 for marker in mandata: # для каждого индекса словаря
-    exname, *_ = marker.split()
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Лист1"
+    exname, *_ = marker.split() #преобразует список(list) marker в слово(str) переменная exname, в дальнейшем используется для создания имени файла по имени маркера 
+    print(f'\nСоздаём файл по маркеру "{exname}":')
+    wb = Workbook() #работаем с новым xlsx файлом (Workbook())
+    ws = wb.active #работаем с активным листом
+    ws.title = "Заявка" #задаём имя листа
 
-    ws.append(shapka) # Добавляем шапку
+    ws.append(shapka) # Добавляем в лист шапку
     for row in mandata[marker]:  #  для каждого индекса(маркера):
-        ws.append(row) # добавляем список
+        ws.append(row) # добавляем список, заполняем все строки с соответствующим маркером
 
-    # создайм файл и записываем в него данные из словаря:
+    # сохраняем получившийся файл и переходим к следующему маркеру:
 
     exfilname = join('.', 'Data', ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
     exfilname = abspath(exfilname)
@@ -89,9 +70,8 @@ for marker in mandata: # для каждого индекса словаря
     wb.save(exfilname) # сохраняем файл
     wb.close # закрываем файл
 
-    # копируем стиль ячеек из исходного документа в новый:
-
-
+    # копируем стиль ячеек из исходного документа в новый: надо как-то это сделать
+# переходим к следующему маркеру
 
 print('\nДанные по маркеру материалов обработаны')
 print('Заявки созданы')
