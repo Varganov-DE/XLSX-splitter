@@ -3,44 +3,22 @@ from pathlib import Path
 from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Alignment, PatternFill, Font, Border, Side, Protection
 from os.path import join, abspath
- 
-# Определение всех необходимых для обработки файла функций
- 
-def split_pages(data_path, name_of_marker_cell):
-    class NotAllData(Exception): 
-        pass
 
-    # Аргумент №1: data_path - название файла и путь к нему
-
-    #data_path = input("Введите название файла(вида: название.xlsx):  ")
-    #data_path = ("Спецификация ОВ.xlsx") # относительный путь
-    #data_path = abspath(data_path) # абсолютный путь
+import openpyxl
+import os
+   
+def splitter_wb(data_path, number_cell):
 
     # задаём параметры работы с файлом:
-    wb = load_workbook(filename = data_path, data_only = True, read_only = True)
+    wb = openpyxl.load_workbook(filename = data_path, data_only = True, read_only = True)
 
     wsn = wb.sheetnames # присваивает список листов в книге
     print(f"В файле \"{data_path}\", есть листы: {wsn}.")
-    wsdata = None
 
-    # Аргумент №2: name_of_marker_cell - координаты ячейки с маркером
-
-    #name_of_marker_cell = input("Введите координаты ячейки с маркером(напр E1): ")
-    #name_of_marker_cell = 'E1'
-
-    number_cell = name_of_marker_cell
-    number_cell = number_cell[:-1]
-    number_cell = ord(number_cell.lower()) - 97
-
-    for i in wsn:
-        if wb[i][name_of_marker_cell].value != None: #проверка есть ли значение в указанной ячейке с маркером
-            wsdata = i
-    if wsdata == None:
-        raise NotAllData('Нет данных в указанной колонке')
+    number_cell = ord(number_cell.lower()) - 97 #Вычисляем порядковый номер столбца с маркером:
 
     # запись в переменную shapka названий всех столбцов:
-
-    ws = wb[wsdata]
+    ws = wb.active
     shapka = [cell.value for cell in next(
         ws.iter_rows(min_row=1, min_col=1, max_row=1, max_col=ws.max_column))]
 
@@ -66,19 +44,20 @@ def split_pages(data_path, name_of_marker_cell):
 
     wb.close # закрываем рабочую книгу
 
-    # Создание отдельной книги xlsx под каждый маркер материалов
+    # Создание отдельной книги xlsx под каждый маркер материалов:
 
     for marker in mandata: # для каждого индекса словаря
-        exname, *_ = marker.split()
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Лист1"
+        exname, *_ = marker.split() #преобразует список(list) marker в слово(str) переменная exname, в дальнейшем используется для создания имени файла по имени маркера 
+        print(f'\nСоздаём файл по маркеру "{exname}":')
+        wb = Workbook() #работаем с новым xlsx файлом (Workbook())
+        ws = wb.active #работаем с активным листом
+        ws.title = "Заявка" #задаём имя листа
 
-        ws.append(shapka) # Добавляем шапку
+        ws.append(shapka) # Добавляем в лист шапку
         for row in mandata[marker]:  #  для каждого индекса(маркера):
-            ws.append(row) # добавляем список
+            ws.append(row) # добавляем список, заполняем все строки с соответствующим маркером
 
-        # создайм файл и записываем в него данные из словаря:
+        # сохраняем получившийся файл и переходим к следующему маркеру:
 
         exfilname = join('.', 'Data', ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
         exfilname = abspath(exfilname)
@@ -87,24 +66,21 @@ def split_pages(data_path, name_of_marker_cell):
         wb.save(exfilname) # сохраняем файл
         wb.close # закрываем файл
 
-        # копируем стиль ячеек из исходного документа в новый:
-
-
+        # копируем стиль ячеек из исходного документа в новый: надо как-то это сделать
+    # переходим к следующему маркеру
 
     print('\nДанные по маркеру материалов обработаны')
     print('Заявки созданы')
 
     input('\nНажмите ENTER, что-бы закрыть окно.')
-    
-    
+
     """ Проверяем, если введенные пользователем значения являются правильными.
  
     Аргументы:
-        input_file: Исходный PDF файл
+        input_file: Исходный xlsx файл
         output_dir: Директория для хранения готового файла
-        range: File Строка, содержащая число копируемых страниц: : 1-3,4
-        file_name: Имя вывода готового PDF файла
- 
+        range: File Столбец с маркером
+        file_name: Префикс вывода новых заявок
     Возвращает:
         True, если ошибка и False, если нет
         Список сообщений об ошибке
@@ -115,7 +91,7 @@ def split_pages(data_path, name_of_marker_cell):
     # Проверяет, выбран ли xlsx файл
     if Path(data_path).suffix.upper() != ".xlsx":
         errors = True
-        error_msgs.append("Please select a PDF input file")
+        error_msgs.append("Please select a xlsx input file")
  
     # Проверяет действительный каталог
     if not(Path(exfilname)).exists():
@@ -137,8 +113,8 @@ def press(button):
         button: название кнопки. Используем названия Выполнить или Выход
     """
     if button == "Process":
-        src_file = app.getEntry("wb")
-        dest_dir = app.getEntry("name_of_marker_cell")
+        src_file = app.getEntry("data_path")
+        dest_dir = app.getEntry("number_cell")
         
         
     else:
