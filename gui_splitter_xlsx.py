@@ -10,7 +10,9 @@ import os
 def splitter_wb(data_path, number_cell):
 
     # задаём параметры работы с файлом:
+    data_path = 'E:\site\coding\XlsxWork\Спецификация ОВ.xlsx'
     wb = openpyxl.load_workbook(filename = data_path, data_only = True, read_only = True)
+    data_path = abspath(data_path)
 
     wsn = wb.sheetnames # присваивает список листов в книге
     print(f"В файле \"{data_path}\", есть листы: {wsn}.")
@@ -113,7 +115,7 @@ def press(button):
         button: название кнопки. Используем названия Выполнить или Выход
     """
     if button == "Process":
-        src_file = app.getEntry("data_path")
+        #src_file = app.getEntry("data_path")
         dest_dir = app.getEntry("number_cell")
         
         
