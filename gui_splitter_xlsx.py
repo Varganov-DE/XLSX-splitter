@@ -4,15 +4,13 @@ from openpyxl import load_workbook, Workbook
 from openpyxl.styles import Alignment, PatternFill, Font, Border, Side, Protection
 from os.path import join, abspath
 
-import openpyxl
-import os
-   
+# Аргумент №1: data_path - название файла и путь к нему
+# Аргумент №2: number_cell - координаты ячейки с маркером
+
 def splitter_wb(data_path, number_cell):
 
     # задаём параметры работы с файлом:
-    data_path = 'E:\site\coding\XlsxWork\Спецификация ОВ.xlsx'
-    wb = openpyxl.load_workbook(filename = data_path, data_only = True, read_only = True)
-    data_path = abspath(data_path)
+    wb = load_workbook(filename = data_path, data_only = True, read_only = True)
 
     wsn = wb.sheetnames # присваивает список листов в книге
     print(f"В файле \"{data_path}\", есть листы: {wsn}.")
@@ -74,15 +72,17 @@ def splitter_wb(data_path, number_cell):
     print('\nДанные по маркеру материалов обработаны')
     print('Заявки созданы')
 
-    input('\nНажмите ENTER, что-бы закрыть окно.')
+    
 
+def validate_inputs(data_path, number_cell):
     """ Проверяем, если введенные пользователем значения являются правильными.
  
     Аргументы:
-        input_file: Исходный xlsx файл
+        input_file: Исходный PDF файл
         output_dir: Директория для хранения готового файла
-        range: File Столбец с маркером
-        file_name: Префикс вывода новых заявок
+        range: File Строка, содержащая число копируемых страниц: : 1-3,4
+        file_name: Имя вывода готового PDF файла
+ 
     Возвращает:
         True, если ошибка и False, если нет
         Список сообщений об ошибке
@@ -90,24 +90,18 @@ def splitter_wb(data_path, number_cell):
     errors = False
     error_msgs = []
  
-    # Проверяет, выбран ли xlsx файл
-    if Path(data_path).suffix.upper() != ".xlsx":
+    # Проверяет, выбран ли XLSX файл
+    if Path(data_path).suffix != ".xlsx":
         errors = True
-        error_msgs.append("Please select a xlsx input file")
+        error_msgs.append("Выберите файл формата XLSX!")
  
-    # Проверяет действительный каталог
-    if not(Path(exfilname)).exists():
+    # Проверяет, выбран ли диапазон
+    if len(number_cell) < 1:
         errors = True
-        error_msgs.append("Please Select a valid output directory")
- 
-    # Проверяет название файла
-    if len(data_path) < 1:
-        errors = True
-        error_msgs.append("Please enter a file name")
+        error_msgs.append("Введите название столбца с маркером")
  
     return(errors, error_msgs)
- 
- 
+
 def press(button):
     """ Выполняет нажатие кнопки
  
@@ -115,10 +109,13 @@ def press(button):
         button: название кнопки. Используем названия Выполнить или Выход
     """
     if button == "Process":
-        #src_file = app.getEntry("data_path")
-        dest_dir = app.getEntry("number_cell")
-        
-        
+        data_path = app.getEntry("data_path")
+        number_cell = app.getEntry("number_cell")
+        errors, error_msg = validate_inputs(data_path, number_cell)
+        if errors:
+            app.errorBox("Error", "\n".join(error_msg), parent=None)
+        else:
+            splitter_wb(data_path, number_cell)
     else:
         app.stop()
  
@@ -126,15 +123,14 @@ def press(button):
 # Создать окно пользовательского интерфейса
 app = gui("XLSX Splitter", useTtk=True)
 app.setTtkTheme("default")
-app.setSize(500, 200)
+app.setSize(300, 100)
  
 # Добавить интерактивные компоненты
-app.addLabel("Choose Source XLSX File")
-app.addFileEntry("Input_File")
+app.addLabel("Выберите XLSX файл")
+app.addFileEntry("data_path")
  
-app.addLabel("Введите имя ячейки с маркером")
-app.addEntry("Output_Directory")
- 
+app.addLabel("Буквенное обозначение колонки с маркером")
+app.addEntry("number_cell")
  
 # Связать кнопки с функцией под названием press
 app.addButtons(["Process", "Quit"], press)
