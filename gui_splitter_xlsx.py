@@ -71,19 +71,17 @@ def splitter_wb(data_path, path_output, number_cell):
     # переходим к следующему маркеру
 
     print('\nДанные по маркеру материалов обработаны')
-    print('Заявки созданы')
-
-    
+    print('Заявки созданы')    
 
 def validate_inputs(data_path, path_output, number_cell):
+    
     """ Проверяем, если введенные пользователем значения являются правильными.
  
     Аргументы:
-        input_file: Исходный PDF файл
-        output_dir: Директория для хранения готового файла
-        range: File Строка, содержащая число копируемых страниц: : 1-3,4
-        file_name: Имя вывода готового PDF файла
- 
+        data_path: выбор входящего файла
+        output_dir: выбор папки для хранения новых файлов
+        number_cell: буква столбца с маркером
+         
     Возвращает:
         True, если ошибка и False, если нет
         Список сообщений об ошибке
@@ -99,7 +97,7 @@ def validate_inputs(data_path, path_output, number_cell):
     # Проверяет доступный ли каталог
     if not(Path(path_output)).exists():
         errors = True
-        error_msgs.append("Please Select a valid output directory")
+        error_msgs.append("Выберите доступную папку")
  
     # Проверяет, выбран ли диапазон
     if len(number_cell) < 1:
@@ -125,8 +123,7 @@ def press(button):
             splitter_wb(data_path, path_output, number_cell)
     else:
         app.stop()
- 
- 
+  
 # Создать окно пользовательского интерфейса
 app = gui("XLSX Splitter", useTtk=True)
 app.setTtkTheme("default")
