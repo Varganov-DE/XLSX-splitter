@@ -5,9 +5,10 @@ from openpyxl.styles import Alignment, PatternFill, Font, Border, Side, Protecti
 from os.path import join, abspath
 
 # Аргумент №1: data_path - название файла и путь к нему
-# Аргумент №2: number_cell - координаты ячейки с маркером
+# Аргумент №2: path_output - название папки и путь к ней
+# Аргумент №3: number_cell - координаты ячейки с маркером
 
-def splitter_wb(data_path, number_cell):
+def splitter_wb(data_path, path_output, number_cell):
 
     # задаём параметры работы с файлом:
     wb = load_workbook(filename = data_path, data_only = True, read_only = True)
@@ -59,7 +60,7 @@ def splitter_wb(data_path, number_cell):
 
         # сохраняем получившийся файл и переходим к следующему маркеру:
 
-        exfilname = join('.', 'Data', ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
+        exfilname = join('.', path_output, ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
         exfilname = abspath(exfilname)
         print(exfilname)
 
@@ -74,7 +75,7 @@ def splitter_wb(data_path, number_cell):
 
     
 
-def validate_inputs(data_path, number_cell):
+def validate_inputs(data_path, path_output, number_cell):
     """ Проверяем, если введенные пользователем значения являются правильными.
  
     Аргументы:
@@ -94,6 +95,11 @@ def validate_inputs(data_path, number_cell):
     if Path(data_path).suffix != ".xlsx":
         errors = True
         error_msgs.append("Выберите файл формата XLSX!")
+
+    # Проверяет доступный ли каталог
+    if not(Path(path_output)).exists():
+        errors = True
+        error_msgs.append("Please Select a valid output directory")
  
     # Проверяет, выбран ли диапазон
     if len(number_cell) < 1:
@@ -110,12 +116,13 @@ def press(button):
     """
     if button == "Process":
         data_path = app.getEntry("data_path")
+        path_output = app.getEntry("path_output")
         number_cell = app.getEntry("number_cell")
-        errors, error_msg = validate_inputs(data_path, number_cell)
+        errors, error_msg = validate_inputs(data_path, path_output, number_cell)
         if errors:
             app.errorBox("Error", "\n".join(error_msg), parent=None)
         else:
-            splitter_wb(data_path, number_cell)
+            splitter_wb(data_path, path_output, number_cell)
     else:
         app.stop()
  
@@ -123,11 +130,14 @@ def press(button):
 # Создать окно пользовательского интерфейса
 app = gui("XLSX Splitter", useTtk=True)
 app.setTtkTheme("default")
-app.setSize(300, 100)
+app.setSize(300, 150)
  
 # Добавить интерактивные компоненты
 app.addLabel("Выберите XLSX файл")
 app.addFileEntry("data_path")
+
+app.addLabel("Выберите папку для сохранения заявок")
+app.addDirectoryEntry("path_output")
  
 app.addLabel("Буквенное обозначение колонки с маркером")
 app.addEntry("number_cell")
