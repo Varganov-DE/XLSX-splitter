@@ -58,6 +58,8 @@ def splitter_wb(data_path, path_output, number_cell):
         for row in mandata[marker]:  #  для каждого индекса(маркера):
             ws.append(row) # добавляем список, заполняем все строки с соответствующим маркером
 
+        ws.delete_cols(number_cell + 1) # удаляем колонку с маркерами
+
         # сохраняем получившийся файл и переходим к следующему маркеру:
 
         exfilname = join('.', path_output, ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
