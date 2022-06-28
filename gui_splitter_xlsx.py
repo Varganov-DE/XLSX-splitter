@@ -28,6 +28,7 @@ def splitter_wb(data_path, path_output, number_cell):
     mandata = {} # создаём пустой словарь
 
     # бежим по всем ячейкам в каждой строке начиная со второй(min_row=2) и с первой колонки(min_col=1), пока в них есть данные(max_row=ws.max_row, max_col=ws.max_column) читаем их значения и записываем в кортеж row: 
+    
     for row in ws.iter_rows(min_row=2, min_col=1, max_row=ws.max_row,
                             max_col=ws.max_column): 
         
@@ -45,6 +46,9 @@ def splitter_wb(data_path, path_output, number_cell):
 
     wb.close # закрываем рабочую книгу
 
+    # прописываем стиль ячеек 
+
+
     # Создание отдельной книги xlsx под каждый маркер материалов:
 
     for marker in mandata: # для каждого индекса словаря
@@ -57,17 +61,23 @@ def splitter_wb(data_path, path_output, number_cell):
         ws.append(shapka) # Добавляем в лист шапку
         for row in mandata[marker]:  #  для каждого индекса(маркера):
             ws.append(row) # добавляем список, заполняем все строки с соответствующим маркером
+            cell = ws['B1']
+            cell.font = Font(name = 'Arial', size = 14)
+            
 
-        ws.delete_cols(number_cell + 1) # удаляем колонку с маркерами
-
-        # сохраняем получившийся файл и переходим к следующему маркеру:
 
         exfilname = join('.', path_output, ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
         exfilname = abspath(exfilname)
         print(exfilname)
 
+        ws.delete_cols(number_cell + 1) # удаляем колонку с маркером
+
+        # сохраняем получившийся файл и переходим к следующему маркеру:
+
         wb.save(exfilname) # сохраняем файл
         wb.close # закрываем файл
+
+
 
         # копируем стиль ячеек из исходного документа в новый: надо как-то это сделать
     # переходим к следующему маркеру
