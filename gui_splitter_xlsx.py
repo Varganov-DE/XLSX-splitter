@@ -1,3 +1,4 @@
+from enum import auto
 from appJar import gui
 from pathlib import Path
 from openpyxl import load_workbook, Workbook
@@ -59,11 +60,15 @@ def splitter_wb(data_path, path_output, number_cell):
         ws.title = "Заявка" #задаём имя листа
 
         ws.append(shapka) # Добавляем в лист шапку
+        i = 1
         for row in mandata[marker]:  #  для каждого индекса(маркера):
             ws.append(row) # добавляем список, заполняем все строки с соответствующим маркером
-            cell = ws['B1']
-            cell.font = Font(name = 'Arial', size = 14)
+            ws.column_dimensions['B'].width = 70
+            ws.column_dimensions['C'].width = 20
+            ws.column_dimensions['D'].width = 20
             
+            ws.row_dimensions[i].height = 20
+            i += 1
 
 
         exfilname = join('.', path_output, ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
