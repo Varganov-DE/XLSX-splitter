@@ -67,9 +67,7 @@ def splitter_wb(data_path, path_output, number_cell):
             ws.column_dimensions['C'].width = 20
             ws.column_dimensions['D'].width = 20
             
-            ws.row_dimensions[i].height = 20
             i += 1
-
 
         exfilname = join('.', path_output, ('Заявка ' + exname + '.xlsx')) # прописываем путь и название сохраняемого файла
         exfilname = abspath(exfilname)
@@ -82,9 +80,8 @@ def splitter_wb(data_path, path_output, number_cell):
         wb.save(exfilname) # сохраняем файл
         wb.close # закрываем файл
 
-
-
         # копируем стиль ячеек из исходного документа в новый: надо как-то это сделать
+        # пришёл к выводу, что легче макрос написать в vba для xlsx, что-бы сделать красивый стиль таблицы
     # переходим к следующему маркеру
 
     print('\nДанные по маркеру материалов обработаны')
