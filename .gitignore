@@ -1,6 +1,3 @@
 __pycache__/
-Спецификация ОВ.xlsx
-ExFile.py
-venv/
-Data/
-old_version/
+venv
+.gitignore
